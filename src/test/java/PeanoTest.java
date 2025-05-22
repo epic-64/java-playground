@@ -177,6 +177,25 @@ class PeanoTest {
     }
 
     @Test
+    void testMethodChaining() {
+        final Peano one = PeanoImpl.fromInt(1);
+        final Peano two = PeanoImpl.fromInt(2);
+        final Peano three = PeanoImpl.fromInt(3);
+
+        final int result =
+            PeanoImpl.fromIntSafe(5).getOrThrow("yolo")  // 5
+            .add(one)                                    // 6
+            .add(one)                                    // 7
+            .div(two).getOrThrow("not dividing by zero") // 3
+            .mul(three)                                  // 9
+            .sub(one)                                    // 8
+            .toInt()
+        ;
+
+        assertEquals(8, result);
+    }
+
+    @Test
     void testDivideThenSum() {
         Result<Peano, PeanoDivisionError> subResult = PeanoImpl.div(PeanoImpl.fromInt(9), PeanoImpl.fromInt(2));
 

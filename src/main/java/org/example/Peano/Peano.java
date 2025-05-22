@@ -7,6 +7,10 @@ public sealed interface Peano {
     record Zero() implements Peano {}
     record Succ(Peano previous) implements Peano {}
 
+    default int toInt() {
+        return PeanoImpl.toInt(this);
+    }
+
     default Peano add(Peano other) {
         return PeanoImpl.add(this, other);
     }
