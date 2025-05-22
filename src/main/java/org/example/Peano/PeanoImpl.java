@@ -9,7 +9,6 @@ import org.example.Result.Ok;
 
 public class PeanoImpl {
     public static Peano fromInt(int n) {
-        if (n < 0) throw new IllegalArgumentException("Negative numbers are not allowed");
         if (n == 0) return new Zero();
 
         return new Succ(fromInt(n - 1));
