@@ -16,14 +16,14 @@ public class PeanoImpl {
 
     public static int toInt(Peano p) {
         return switch (p) {
-            case Zero z -> 0;
+            case Zero() -> 0;
             case Succ s -> 1 + toInt(s.previous());
         };
     }
 
     public static Peano add(Peano p1, Peano p2) {
         return switch (p1) {
-            case Zero z -> p2;
+            case Zero() -> p2;
             case Succ s -> new Succ(add(s.previous(), p2));
         };
     }
@@ -33,7 +33,7 @@ public class PeanoImpl {
         return switch (minuend) {
             case Zero z -> z;
             case Succ(Peano minuend_ante) -> switch (subtrahend) {
-                case Zero z -> minuend;
+                case Zero() -> minuend;
                 case Succ(Peano subtrahend_ante) -> sub(minuend_ante, subtrahend_ante);
             };
         };
@@ -41,7 +41,7 @@ public class PeanoImpl {
 
     public static Peano mul(Peano p1, Peano p2) {
         return switch (p1) {
-            case Zero z -> new Zero();
+            case Zero() -> new Zero();
             case Succ s -> add(p2, mul(s.previous(), p2));
         };
     }
