@@ -23,6 +23,9 @@ public class Main {
             case Ok(Peano value) -> value;
         };
 
+        // alternative way to force extract the value
+        final Peano num4 = PeanoImpl.div(num1, num2).getOrThrow();
+
         // final var num4 = PeanoImpl.add(num3, num2);
     }
 }
