@@ -12,16 +12,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 class PeanoTest {
     @Test
     void testFromInt() {
-        record TestCase(int input, Peano expected) {}
+        record TestData(int input, Peano expected) {}
 
-        final TestCase[] testCases = {
-                new TestCase(0, new Peano.Zero()),
-                new TestCase(1, new Peano.Succ(new Peano.Zero())),
-                new TestCase(2, new Peano.Succ(new Peano.Succ(new Peano.Zero()))),
-                new TestCase(3, new Peano.Succ(new Peano.Succ(new Peano.Succ(new Peano.Zero())))),
+        final TestData[] testCases = {
+                new TestData(0, new Peano.Zero()),
+                new TestData(1, new Peano.Succ(new Peano.Zero())),
+                new TestData(2, new Peano.Succ(new Peano.Succ(new Peano.Zero()))),
+                new TestData(3, new Peano.Succ(new Peano.Succ(new Peano.Succ(new Peano.Zero())))),
         };
 
-        for (TestCase testCase : testCases) {
+        for (TestData testCase : testCases) {
             Peano result = PeanoImpl.fromInt(testCase.input);
             assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
         }
@@ -29,35 +29,35 @@ class PeanoTest {
 
     @Test
     void testToInt() {
-        record TestCase(Peano input, int expected) {}
+        record TestData(Peano input, int expected) {}
 
-        final TestCase[] testCases = {
-                new TestCase(new Peano.Zero(), 0),
-                new TestCase(new Peano.Succ(new Peano.Zero()), 1),
-                new TestCase(new Peano.Succ(new Peano.Succ(new Peano.Zero())), 2),
-                new TestCase(new Peano.Succ(new Peano.Succ(new Peano.Succ(new Peano.Zero()))), 3),
+        final TestData[] testCases = {
+                new TestData(new Peano.Zero(), 0),
+                new TestData(new Peano.Succ(new Peano.Zero()), 1),
+                new TestData(new Peano.Succ(new Peano.Succ(new Peano.Zero())), 2),
+                new TestData(new Peano.Succ(new Peano.Succ(new Peano.Succ(new Peano.Zero()))), 3),
         };
 
-        for (TestCase testCase : testCases) {
+        for (TestData testCase : testCases) {
             int result = PeanoImpl.toInt(testCase.input);
             assertEquals(result, testCase.expected, "Failed for %s".formatted(testCase.input));
         }
     }
 
     @Test
-    void testAdd() {
-        record TestCase(Peano p1, Peano p2, Peano expectedResult) {}
+    void testAddition() {
+        record TestData(Peano p1, Peano p2, Peano expectedResult) {}
 
-        final TestCase[] testCases = {
-                new TestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
-                new TestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
-                new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(1)),
-                new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), PeanoImpl.fromInt(2)),
-                new TestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), PeanoImpl.fromInt(5)),
-                new TestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(5)),
+        final TestData[] testCases = {
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(1)),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), PeanoImpl.fromInt(2)),
+                new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), PeanoImpl.fromInt(5)),
+                new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(5)),
         };
 
-        for (TestCase testCase : testCases) {
+        for (TestData testCase : testCases) {
             final Peano result = PeanoImpl.add(testCase.p1, testCase.p2);
             assertEquals(result, testCase.expectedResult, "Failed for %s + %s".formatted(testCase.p1, testCase.p2));
         }
@@ -65,18 +65,18 @@ class PeanoTest {
 
     @Test
     void testMultiplication() {
-        record TestCase(Peano p1, Peano p2, Peano expectedResult) {}
+        record TestData(Peano p1, Peano p2, Peano expectedResult) {}
 
-        final TestCase[] testCases = {
-                new TestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
-                new TestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(0)),
-                new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
-                new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
-                new TestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), PeanoImpl.fromInt(6)),
-                new TestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(6)),
+        final TestData[] testCases = {
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
+                new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), PeanoImpl.fromInt(6)),
+                new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(6)),
         };
 
-        for (TestCase testCase : testCases) {
+        for (TestData testCase : testCases) {
             final Peano result = PeanoImpl.mul(testCase.p1, testCase.p2);
             assertEquals(result, testCase.expectedResult, "Failed for %s * %s".formatted(testCase.p1, testCase.p2));
         }
@@ -116,13 +116,13 @@ class PeanoTest {
             new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(2))),
             new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(3))),
 
-            // division by 2
+            // division by 2, even and odd
             new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(2))),
             new TestData(PeanoImpl.fromInt(9), PeanoImpl.fromInt(4), new Ok<>(PeanoImpl.fromInt(2))),
 
-            // todo: currently failing. fix it
             // divisor larger than dividend
             new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(0))),
+            new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(5), new Ok<>(PeanoImpl.fromInt(0))),
         };
 
         for (TestData testCase : testCases) {
