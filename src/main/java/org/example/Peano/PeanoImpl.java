@@ -31,12 +31,12 @@ public class PeanoImpl {
     /**
      * Note: I allow subtracting a larger number from a smaller one, the result will be Zero.
      */
-    public static Peano sub(Peano p1, Peano p2) {
-        return switch (p1) {
+    public static Peano sub(Peano minuend, Peano subtrahend) {
+        return switch (minuend) {
             case Zero z -> z;
-            case Succ(Peano previous) -> switch (p2) {
-                case Zero ignored -> p1;
-                case Succ s2 -> sub(previous, s2.previous()); // StackOverflow!
+            case Succ(Peano minuend_ante) -> switch (subtrahend) {
+                case Zero z -> minuend;
+                case Succ(Peano subtrahend_ante) -> sub(minuend_ante, subtrahend_ante); // StackOverflow!
             };
         };
     }
@@ -49,15 +49,12 @@ public class PeanoImpl {
     }
 
     public static Ordering compare(Peano p1, Peano p2) {
-        if (p1 instanceof Zero && p2 instanceof Zero) {
-            return new Ordering.Equal();
-        } else if (p1 instanceof Zero) {
-            return new Ordering.LessThan();
-        } else if (p2 instanceof Zero) {
-            return new Ordering.Greater();
-        } else {
-            return compare(((Succ) p1).previous(), ((Succ) p2).previous());
-        }
+        return switch (p1) {
+            case Zero() when p2 instanceof Zero -> new Ordering.Equal();
+            case Zero() -> new Ordering.LessThan();
+            case Succ x when p2 instanceof Zero -> new Ordering.Greater();
+            case Succ x -> compare(x.previous(), ((Succ) p2).previous()); // StackOverflow!
+        };
     }
 
     public static Result<Peano, PeanoError> div(Peano dividend, Peano divisor) {
