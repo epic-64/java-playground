@@ -3,9 +3,8 @@ import org.example.Peano.PeanoImpl;
 import org.example.Result;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class PeanoTest {
     @Test
