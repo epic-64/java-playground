@@ -1,5 +1,6 @@
 package org.example.Peano;
 
+import org.example.Ordering;
 import org.example.Peano.Peano.Succ;
 import org.example.Peano.Peano.Zero;
 import org.example.Result;
@@ -47,6 +48,18 @@ public class PeanoImpl {
         };
     }
 
+    public static Ordering compare(Peano p1, Peano p2) {
+        if (p1 instanceof Zero && p2 instanceof Zero) {
+            return new Ordering.Equal();
+        } else if (p1 instanceof Zero) {
+            return new Ordering.LessThan();
+        } else if (p2 instanceof Zero) {
+            return new Ordering.Greater();
+        } else {
+            return compare(((Succ) p1).previous(), ((Succ) p2).previous());
+        }
+    }
+
     public static Result<Peano, PeanoError> div(Peano p1, Peano p2) {
         if (p2 instanceof Zero) {
             return new Error<>(new PeanoError.DivisionByZero());
@@ -56,13 +69,26 @@ public class PeanoImpl {
             return new Ok<>(new Zero());
         }
 
-        Peano acc = new Zero();
-        Peano current = p1;
+        Peano divisionCounter = new Zero();
+        Peano remainder = p1;
 
-        while (current instanceof Succ) {
-            current = ((Succ) current).previous();
-            acc = add(acc, new Succ(new Zero()));
+        while (true) {
+            // subtract p2 from our number and extract the value
+            remainder = switch (sub(remainder, p2)) {
+                case Ok<Peano, PeanoError> ok -> ok.value();
+                case Error<Peano, PeanoError> error -> throw new IllegalStateException("Unexpected error: " + error.error()); // this will never happen, trust me
+            };
+
+            // add 1 to our division counter for each time we can subtract p2
+            divisionCounter = add(divisionCounter, new Succ(new Zero()));
+
+            // if and only if the remainder is less than p2, we stop
+            Ordering comparison = compare(remainder, p2);
+            if (comparison instanceof Ordering.LessThan) {
+                break;
+            }
         }
-        return new Ok<>(acc);
+
+        return new Ok<>(divisionCounter);
     }
 }

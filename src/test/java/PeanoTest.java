@@ -123,6 +123,21 @@ class PeanoTest {
     }
 
     @Test
+    void testDivisionByZero() {
+        final Result<Peano, PeanoError> result = PeanoImpl.div(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0));
+        assertEquals(new Error<>(new PeanoError.DivisionByZero()), result);
+
+        final Result<Peano, PeanoError> result2 = PeanoImpl.div(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0));
+        assertEquals(new Error<>(new PeanoError.DivisionByZero()), result2);
+    }
+
+    @Test
+    void testDivision() {
+        final Result<Peano, PeanoError> result = PeanoImpl.div(PeanoImpl.fromInt(6), PeanoImpl.fromInt(2));
+        assertEquals(new Ok<>(PeanoImpl.fromInt(3)), result);
+    }
+
+    @Test
     void testSubtractThenSum() {
         Result<Peano, PeanoError> subResult = PeanoImpl.sub(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2));
 
