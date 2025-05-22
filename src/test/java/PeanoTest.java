@@ -118,4 +118,16 @@ class PeanoTest {
             }
         }
     }
+
+    @Test
+    void testSubtractThenSum() {
+        final Peano subbed = switch(PeanoImpl.sub(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2))) {
+            case Result.Ok<Peano> ok -> ok.getValue();
+            case Result.Error<Peano> error -> fail("Expected success but got error: " + error.getError().getMessage());
+        };
+        assertEquals(1, PeanoImpl.toInt(subbed));
+
+        final Peano result = PeanoImpl.add(subbed, PeanoImpl.fromInt(2));
+        assertEquals(3, PeanoImpl.toInt(result));
+    }
 }
