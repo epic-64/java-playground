@@ -2,8 +2,8 @@ import org.example.Ordering;
 import org.example.Peano.Peano;
 import org.example.Peano.Peano.Succ;
 import org.example.Peano.Peano.Zero;
-import org.example.Peano.PeanoError;
-import org.example.Peano.PeanoFromIntError;
+import org.example.Peano.PeanoDivisionError;
+import org.example.Peano.PeanoConstructionError;
 import org.example.Peano.PeanoImpl;
 import org.example.Result;
 import org.example.Result.Ok;
@@ -34,7 +34,7 @@ class PeanoTest {
 
     @Test
     void testFromIntSafe() {
-        record TestData(int input, Result<Peano, PeanoFromIntError> expected) {}
+        record TestData(int input, Result<Peano, PeanoConstructionError> expected) {}
 
         final TestData[] testCases = {
                 new TestData(0, new Ok<>(new Zero())),
@@ -42,12 +42,12 @@ class PeanoTest {
                 new TestData(2, new Ok<>(new Succ(new Succ(new Zero())))),
                 new TestData(3, new Ok<>(new Succ(new Succ(new Succ(new Zero()))))),
                 new TestData(100, new Ok<>(new Succ(PeanoImpl.fromInt(99)))),
-                new TestData(-1, new Err<>(new PeanoFromIntError.Negative(-1))),
-                new TestData(101, new Err<>(new PeanoFromIntError.TooLarge(101))),
+                new TestData(-1, new Err<>(new PeanoConstructionError.Negative(-1))),
+                new TestData(101, new Err<>(new PeanoConstructionError.TooLarge(101))),
         };
 
         for (TestData testCase : testCases) {
-            Result<Peano, PeanoFromIntError> result = PeanoImpl.fromIntSafe(testCase.input);
+            Result<Peano, PeanoConstructionError> result = PeanoImpl.fromIntSafe(testCase.input);
             assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
         }
     }
@@ -129,12 +129,12 @@ class PeanoTest {
 
     @Test
     void testDivision() {
-        record TestData(Peano p1, Peano p2, Result<Peano, PeanoError> expectedResult) {}
+        record TestData(Peano p1, Peano p2, Result<Peano, PeanoDivisionError> expectedResult) {}
 
         final TestData[] testCases = {
                 // division by 0
-                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
-                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Err<>(new PeanoDivisionError.DivisionByZero())),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Err<>(new PeanoDivisionError.DivisionByZero())),
 
                 // division by 1
                 new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(0))),
@@ -152,7 +152,7 @@ class PeanoTest {
         };
 
         for (TestData testCase : testCases) {
-            final Result<Peano, PeanoError.DivisionByZero> result = PeanoImpl.div(testCase.p1, testCase.p2);
+            final Result<Peano, PeanoDivisionError.DivisionByZero> result = PeanoImpl.div(testCase.p1, testCase.p2);
             assertEquals(testCase.expectedResult, result, "Failed for %s / %s".formatted(testCase.p1, testCase.p2));
         }
     }
@@ -178,14 +178,14 @@ class PeanoTest {
 
     @Test
     void testDivideThenSum() {
-        Result<Peano, PeanoError.DivisionByZero> subResult = PeanoImpl.div(PeanoImpl.fromInt(9), PeanoImpl.fromInt(2));
+        Result<Peano, PeanoDivisionError.DivisionByZero> subResult = PeanoImpl.div(PeanoImpl.fromInt(9), PeanoImpl.fromInt(2));
 
         // Compile error: Cannot convert from Result<Peano> to Peano
         // PeanoImpl.add(subResult, PeanoImpl.fromInt(2));
         // Forced to handle errors, without using exceptions in library code :)
 
         final Peano subbed = switch (subResult) {
-            case Err(PeanoError error) -> fail("Unexpected error type: " + error);
+            case Err(PeanoDivisionError error) -> fail("Unexpected error type: " + error);
             case Ok(Peano peano) -> peano;
         };
         assertEquals(4, PeanoImpl.toInt(subbed));

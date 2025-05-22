@@ -15,9 +15,9 @@ public class PeanoImpl {
         return new Succ(fromInt(n - 1));
     }
 
-    public static Result<Peano, PeanoFromIntError> fromIntSafe(int n) {
-        if (n < 0) return new Err<>(new PeanoFromIntError.Negative(n));
-        if (n > 100) return new Err<>(new PeanoFromIntError.TooLarge(n));
+    public static Result<Peano, PeanoConstructionError> fromIntSafe(int n) {
+        if (n < 0) return new Err<>(new PeanoConstructionError.Negative(n));
+        if (n > 100) return new Err<>(new PeanoConstructionError.TooLarge(n));
         if (n == 0) return new Ok<>(new Zero());
 
         Peano intermediate = fromIntSafe(n - 1).getOrThrow(); // it never throws, trust me
@@ -65,9 +65,9 @@ public class PeanoImpl {
         };
     }
 
-    public static Result<Peano, PeanoError.DivisionByZero> div(Peano dividend, Peano divisor) {
+    public static Result<Peano, PeanoDivisionError.DivisionByZero> div(Peano dividend, Peano divisor) {
         if (divisor instanceof Zero) {
-            return new Err<>(new PeanoError.DivisionByZero());
+            return new Err<>(new PeanoDivisionError.DivisionByZero());
         }
 
         if (dividend instanceof Zero) {
