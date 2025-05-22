@@ -11,7 +11,17 @@ public class PeanoImpl {
     public static Peano fromInt(int n) {
         if (n < 0) throw new IllegalArgumentException("Negative numbers are not allowed");
         if (n == 0) return new Zero();
+
         return new Succ(fromInt(n - 1));
+    }
+
+    public static Result<Peano, PeanoFromIntError> fromIntSafe(int n) {
+        if (n < 0) return new Err<>(new PeanoFromIntError.Negative(n));
+        if (n > 100) return new Err<>(new PeanoFromIntError.TooLarge(n));
+        if (n == 0) return new Ok<>(new Zero());
+
+        Peano intermediate = fromIntSafe(n - 1).getOrThrow(); // it never throws, trust me
+        return new Ok<>(new Succ(intermediate));
     }
 
     public static int toInt(Peano p) {
