@@ -7,6 +7,14 @@ public sealed interface Peano {
     record Zero() implements Peano {}
     record Succ(Peano previous) implements Peano {}
 
+    static Peano fromInt(int n) {
+        return PeanoImpl.fromInt(n);
+    }
+
+    static Result<Peano, PeanoConstructionError> fromIntSafe(int n) {
+        return PeanoImpl.fromIntSafe(n);
+    }
+
     default int toInt() {
         return PeanoImpl.toInt(this);
     }
