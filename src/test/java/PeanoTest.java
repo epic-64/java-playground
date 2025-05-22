@@ -1,6 +1,9 @@
 import org.example.Ordering;
 import org.example.Peano.Peano;
+import org.example.Peano.Peano.Succ;
+import org.example.Peano.Peano.Zero;
 import org.example.Peano.PeanoError;
+import org.example.Peano.PeanoFromIntError;
 import org.example.Peano.PeanoImpl;
 import org.example.Result;
 import org.example.Result.Ok;
@@ -25,6 +28,26 @@ class PeanoTest {
 
         for (TestData testCase : testCases) {
             Peano result = PeanoImpl.fromInt(testCase.input);
+            assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
+        }
+    }
+
+    @Test
+    void testFromIntSafe() {
+        record TestData(int input, Result<Peano, PeanoFromIntError> expected) {}
+
+        final TestData[] testCases = {
+                new TestData(0, new Ok<>(new Zero())),
+                new TestData(1, new Ok<>(new Succ(new Zero()))),
+                new TestData(2, new Ok<>(new Succ(new Succ(new Zero())))),
+                new TestData(3, new Ok<>(new Succ(new Succ(new Succ(new Zero()))))),
+                new TestData(100, new Ok<>(new Succ(PeanoImpl.fromInt(99)))),
+                new TestData(-1, new Err<>(new PeanoFromIntError.Negative(-1))),
+                new TestData(101, new Err<>(new PeanoFromIntError.TooLarge(101))),
+        };
+
+        for (TestData testCase : testCases) {
+            Result<Peano, PeanoFromIntError> result = PeanoImpl.fromIntSafe(testCase.input);
             assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
         }
     }
@@ -90,12 +113,12 @@ class PeanoTest {
         record TestData(Peano p1, Peano p2, Peano expectedResult) {}
 
         final TestData[] testCases = {
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(0)),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), PeanoImpl.fromInt(0)),
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(1)),
-            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
-            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(1)),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(1)),
+                new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
+                new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(1)),
         };
 
         for (TestData testCase : testCases) {
@@ -109,23 +132,23 @@ class PeanoTest {
         record TestData(Peano p1, Peano p2, Result<Peano, PeanoError> expectedResult) {}
 
         final TestData[] testCases = {
-            // division by 0
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
+                // division by 0
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
 
-            // division by 1
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(0))),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
-            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(2))),
-            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(3))),
+                // division by 1
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(0))),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
+                new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(2))),
+                new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(3))),
 
-            // division by 2, even and odd
-            new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(2))),
-            new TestData(PeanoImpl.fromInt(9), PeanoImpl.fromInt(4), new Ok<>(PeanoImpl.fromInt(2))),
+                // division by 2, even and odd
+                new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(2))),
+                new TestData(PeanoImpl.fromInt(9), PeanoImpl.fromInt(4), new Ok<>(PeanoImpl.fromInt(2))),
 
-            // divisor larger than dividend
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(0))),
-            new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(5), new Ok<>(PeanoImpl.fromInt(0))),
+                // divisor larger than dividend
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(0))),
+                new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(5), new Ok<>(PeanoImpl.fromInt(0))),
         };
 
         for (TestData testCase : testCases) {
@@ -139,12 +162,12 @@ class PeanoTest {
         record TestData(Peano p1, Peano p2, Ordering expectedResult) {}
 
         final TestData[] testCases = {
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ordering.Equal()),
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ordering.LessThan()),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ordering.Greater()),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ordering.Equal()),
-            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), new Ordering.LessThan()),
-            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ordering.Greater()),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ordering.Equal()),
+                new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ordering.LessThan()),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ordering.Greater()),
+                new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ordering.Equal()),
+                new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), new Ordering.LessThan()),
+                new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ordering.Greater()),
         };
 
         for (TestData testCase : testCases) {
@@ -161,7 +184,7 @@ class PeanoTest {
         // PeanoImpl.add(subResult, PeanoImpl.fromInt(2));
         // Forced to handle errors, without using exceptions in library code :)
 
-        final Peano subbed = switch(subResult) {
+        final Peano subbed = switch (subResult) {
             case Err(PeanoError error) -> fail("Unexpected error type: " + error);
             case Ok(Peano peano) -> peano;
         };
