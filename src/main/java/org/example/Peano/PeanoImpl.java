@@ -1,45 +1,68 @@
 package org.example.Peano;
 
+import org.example.Peano.Peano.Succ;
+import org.example.Peano.Peano.Zero;
 import org.example.Result;
+import org.example.Result.Ok;
+import org.example.Result.Error;
 
 public class PeanoImpl {
     public static Peano fromInt(int n) {
         if (n < 0) throw new IllegalArgumentException("Negative numbers are not allowed");
-        if (n == 0) return new Peano.Zero();
-        return new Peano.Succ(fromInt(n - 1)); // StackOverflow!
+        if (n == 0) return new Zero();
+        return new Succ(fromInt(n - 1)); // StackOverflow!
     }
 
     public static int toInt(Peano p) {
         return switch (p) {
-            case Peano.Zero z -> 0;
-            case Peano.Succ s -> 1 + toInt(s.previous()); // StackOverflow!
+            case Zero z -> 0;
+            case Succ s -> 1 + toInt(s.previous()); // StackOverflow!
         };
     }
 
     public static Peano add(Peano p1, Peano p2) {
         return switch (p1) {
-            case Peano.Zero z -> p2;
-            case Peano.Succ s -> new Peano.Succ(add(s.previous(), p2)); // StackOverflow!
+            case Zero z -> p2;
+            case Succ s -> new Succ(add(s.previous(), p2)); // StackOverflow!
         };
     }
 
     public static Result<Peano, PeanoError> sub(Peano p1, Peano p2) {
         return switch (p1) {
-            case Peano.Zero ignored1 -> switch (p2) {
-                case Peano.Zero ignored -> new Result.Ok<>(new Peano.Zero());
-                case Peano.Succ ignored -> new Result.Error<>(new PeanoError.CannotSubtractPositiveFromZero());
+            case Zero ignored1 -> switch (p2) {
+                case Zero ignored -> new Ok<>(new Zero());
+                case Succ ignored -> new Error<>(new PeanoError.CannotSubtractPositiveFromZero());
             };
-            case Peano.Succ s -> switch (p2) {
-                case Peano.Zero ignored -> new Result.Ok<>(p1);
-                case Peano.Succ s2 -> sub(s.previous(), s2.previous()); // StackOverflow!
+            case Succ s -> switch (p2) {
+                case Zero ignored -> new Ok<>(p1);
+                case Succ s2 -> sub(s.previous(), s2.previous()); // StackOverflow!
             };
         };
     }
 
     public static Peano mul(Peano p1, Peano p2) {
         return switch (p1) {
-            case Peano.Zero z -> new Peano.Zero();
-            case Peano.Succ s -> add(p2, mul(s.previous(), p2)); // StackOverflow!
+            case Zero z -> new Zero();
+            case Succ s -> add(p2, mul(s.previous(), p2)); // StackOverflow!
         };
+    }
+
+    public static Result<Peano, PeanoError> div(Peano p1, Peano p2) {
+        if (p2 instanceof Zero) {
+            return new Error<>(new PeanoError.DivisionByZero());
+        }
+
+        if (p1 instanceof Zero) {
+            return new Ok<>(new Zero());
+        }
+
+        Peano acc = new Zero();
+        Peano current = p1;
+
+        while (current instanceof Succ) {
+            current = ((Succ) current).previous();
+            acc = add(acc, new Succ(new Zero()));
+        }
+        return new Ok<>(acc);
     }
 }
