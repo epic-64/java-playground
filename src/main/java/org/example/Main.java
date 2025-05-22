@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.Peano.Peano;
+import org.example.Peano.Peano.Zero;
 import org.example.Peano.PeanoDivisionError;
 import org.example.Peano.PeanoConstructionError;
 import org.example.Peano.PeanoImpl;
@@ -25,6 +26,9 @@ public class Main {
 
         // Force extract the value. Will blow up with less control over the error state.
         final Peano num8 = fromIntSafe(8).getOrThrow();
+
+        // Using a default value instead. Should almost *never* be used because it may create new bugs.
+        final Peano num9 = fromIntSafe(9).getOrElse(new Zero());
 
         final Peano num3 = switch (PeanoImpl.div(num1, num2)) {
             case Err(PeanoDivisionError.DivisionByZero err) -> throw new RuntimeException("Boo! Division by zero");
