@@ -20,6 +20,7 @@ class PeanoTest {
                 new TestData(1, new Peano.Succ(new Peano.Zero())),
                 new TestData(2, new Peano.Succ(new Peano.Succ(new Peano.Zero()))),
                 new TestData(3, new Peano.Succ(new Peano.Succ(new Peano.Succ(new Peano.Zero())))),
+                new TestData(100, new Peano.Succ(PeanoImpl.fromInt(99))),
         };
 
         for (TestData testCase : testCases) {
@@ -37,6 +38,7 @@ class PeanoTest {
                 new TestData(new Peano.Succ(new Peano.Zero()), 1),
                 new TestData(new Peano.Succ(new Peano.Succ(new Peano.Zero())), 2),
                 new TestData(new Peano.Succ(new Peano.Succ(new Peano.Succ(new Peano.Zero()))), 3),
+                new TestData(new Peano.Succ(PeanoImpl.fromInt(99)), 100),
         };
 
         for (TestData testCase : testCases) {

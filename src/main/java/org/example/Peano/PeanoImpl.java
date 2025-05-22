@@ -11,32 +11,30 @@ public class PeanoImpl {
     public static Peano fromInt(int n) {
         if (n < 0) throw new IllegalArgumentException("Negative numbers are not allowed");
         if (n == 0) return new Zero();
-        return new Succ(fromInt(n - 1)); // StackOverflow!
+        return new Succ(fromInt(n - 1));
     }
 
     public static int toInt(Peano p) {
         return switch (p) {
             case Zero z -> 0;
-            case Succ s -> 1 + toInt(s.previous()); // StackOverflow!
+            case Succ s -> 1 + toInt(s.previous());
         };
     }
 
     public static Peano add(Peano p1, Peano p2) {
         return switch (p1) {
             case Zero z -> p2;
-            case Succ s -> new Succ(add(s.previous(), p2)); // StackOverflow!
+            case Succ s -> new Succ(add(s.previous(), p2));
         };
     }
 
-    /**
-     * Note: I allow subtracting a larger number from a smaller one, the result will be Zero.
-     */
+    /** When subtracting a larger number from a smaller one, the result will be Zero. */
     public static Peano sub(Peano minuend, Peano subtrahend) {
         return switch (minuend) {
             case Zero z -> z;
             case Succ(Peano minuend_ante) -> switch (subtrahend) {
                 case Zero z -> minuend;
-                case Succ(Peano subtrahend_ante) -> sub(minuend_ante, subtrahend_ante); // StackOverflow!
+                case Succ(Peano subtrahend_ante) -> sub(minuend_ante, subtrahend_ante);
             };
         };
     }
@@ -44,7 +42,7 @@ public class PeanoImpl {
     public static Peano mul(Peano p1, Peano p2) {
         return switch (p1) {
             case Zero z -> new Zero();
-            case Succ s -> add(p2, mul(s.previous(), p2)); // StackOverflow!
+            case Succ s -> add(p2, mul(s.previous(), p2));
         };
     }
 
@@ -53,7 +51,7 @@ public class PeanoImpl {
             case Zero() when p2 instanceof Zero -> new Ordering.Equal();
             case Zero() -> new Ordering.LessThan();
             case Succ x when p2 instanceof Zero -> new Ordering.Greater();
-            case Succ x -> compare(x.previous(), ((Succ) p2).previous()); // StackOverflow!
+            case Succ x -> compare(x.previous(), ((Succ) p2).previous());
         };
     }
 
