@@ -5,10 +5,10 @@ sealed public interface Result<T, E> {
     record Ok<T, E>(T value) implements Result<T, E> {}
     record Err<T, E>(E error) implements Result<T, E> {}
 
-    default T getOrThrow() throws RuntimeException {
+    default T getOrThrow(String justification) throws RuntimeException {
         return switch (this) {
             case Ok(T value) -> value;
-            case Err(E err) -> throw new RuntimeException(err.toString());
+            case Err(E err) -> throw new RuntimeException(justification + ": " + err.toString());
         };
     }
 

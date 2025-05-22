@@ -17,6 +17,8 @@ public class Main {
         final Peano sum = add(num1, num2);
         System.out.printf("Sum of %s and %s is: %s%n%n", toInt(num1), toInt(num2), toInt(sum));
 
+        final Peano num0 = fromIntSafe(101).getOrThrow("I don't care!!!");
+
         // Explicit error handling. Compiler forces you to handle all possible cases.
         final Peano num7 = switch(fromIntSafe(7)) {
             case Err(PeanoConstructionError.Negative err) -> throw new RuntimeException("Boo! Negative number");
@@ -25,7 +27,7 @@ public class Main {
         };
 
         // Force extract the value. Will blow up with less control over the error state.
-        final Peano num8 = fromIntSafe(8).getOrThrow();
+        final Peano num8 = fromIntSafe(8).getOrThrow("Yolo");
 
         // Using a default value instead. Should almost *never* be used because it may create new bugs.
         final Peano num9 = fromIntSafe(9).getOrElse(new Zero());
@@ -36,7 +38,7 @@ public class Main {
         };
 
         // alternative way to force extract the value
-        final Peano num4 = PeanoImpl.div(num1, num2).getOrThrow();
+        final Peano num4 = PeanoImpl.div(num1, num2).getOrThrow("I don't care!!!");
 
         // final var num4 = PeanoImpl.add(num3, num2);
     }

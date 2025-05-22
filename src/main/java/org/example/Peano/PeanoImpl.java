@@ -19,7 +19,7 @@ public class PeanoImpl {
         if (n > 100) return new Err<>(new PeanoConstructionError.TooLarge(n));
         if (n == 0) return new Ok<>(new Zero());
 
-        Peano intermediate = fromIntSafe(n - 1).getOrThrow(); // it never throws, trust me
+        Peano intermediate = fromIntSafe(n - 1).getOrThrow("it never throws, trust me");
         return new Ok<>(new Succ(intermediate));
     }
 
