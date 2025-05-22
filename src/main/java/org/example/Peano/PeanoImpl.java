@@ -69,16 +69,9 @@ public class PeanoImpl {
         Peano divisions = new Zero();
         Peano remainder = dividend;
 
-        while (true) {
-            // subtract p2 from our number and extract the value
+        while (!(compare(remainder, divisor) instanceof Ordering.LessThan)) {
             remainder = sub(remainder, divisor);
-
-            // add 1 to our division counter every time we can subtract p2
-            divisions = add(divisions, new Succ(new Zero()));
-
-            if (compare(remainder, divisor) instanceof Ordering.LessThan) {
-                break;
-            }
+            divisions = add(divisions, PeanoImpl.fromInt(1));
         }
 
         return new Ok<>(divisions);

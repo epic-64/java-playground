@@ -122,7 +122,7 @@ class PeanoTest {
 
             // todo: currently failing. fix it
             // divisor larger than dividend
-            // new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(0))),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(0))),
         };
 
         for (TestData testCase : testCases) {
