@@ -2,6 +2,8 @@ import org.example.Peano.Peano;
 import org.example.Peano.PeanoError;
 import org.example.Peano.PeanoImpl;
 import org.example.Result;
+import org.example.Result.Ok;
+import org.example.Result.Error;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,40 +84,40 @@ class PeanoTest {
 
     @Test
     void testSubtractionFailure() {
-        record FailureTestCase (Peano p1, Peano p2, Result.Error<Peano, PeanoError> expectedError) {}
+        record FailureTestCase (Peano p1, Peano p2, Error<Peano, PeanoError> expectedError) {}
 
         final FailureTestCase[] failureCases = {
-            new FailureTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Result.Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
-            new FailureTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Result.Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
+            new FailureTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
+            new FailureTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
         };
 
         for (FailureTestCase testCase : failureCases) {
             final Result<Peano, PeanoError> result = PeanoImpl.sub(testCase.p1, testCase.p2);
 
             switch (result) {
-                case Result.Ok<Peano, PeanoError> ok -> fail("Expected error but got success: " + ok.value());
-                case Result.Error<Peano, PeanoError> error -> assertEquals(error.error(), testCase.expectedError.error());
+                case Ok<Peano, PeanoError> ok -> fail("Expected error but got success: " + ok.value());
+                case Error<Peano, PeanoError> error -> assertEquals(error.error(), testCase.expectedError.error());
             }
         }
     }
 
     @Test
     void testSubtractionSuccess() {
-        record SuccessTestCase (Peano p1, Peano p2, Result.Ok<Peano, PeanoError> expectedResult) {}
+        record SuccessTestCase (Peano p1, Peano p2, Ok<Peano, PeanoError> expectedResult) {}
 
         final SuccessTestCase[] successCases = {
-            new SuccessTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Result.Ok<>(new Peano.Zero())),
-            new SuccessTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Result.Ok<>(PeanoImpl.fromInt(1))),
-            new SuccessTestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Result.Ok<>(PeanoImpl.fromInt(1))),
-            new SuccessTestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Result.Ok<>(PeanoImpl.fromInt(1))),
+            new SuccessTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ok<>(new Peano.Zero())),
+            new SuccessTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ok<>(PeanoImpl.fromInt(1))),
+            new SuccessTestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
+            new SuccessTestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(1))),
         };
 
         for (SuccessTestCase testCase : successCases) {
             final Result<Peano, PeanoError> result = PeanoImpl.sub(testCase.p1, testCase.p2);
 
             switch (result) {
-                case Result.Error<Peano, PeanoError> error -> fail("Expected success but got error: " + error.error());
-                case Result.Ok<Peano, PeanoError> ok -> assertEquals(ok.value(), testCase.expectedResult.value());
+                case Error<Peano, PeanoError> error -> fail("Expected success but got error: " + error.error());
+                case Ok<Peano, PeanoError> ok -> assertEquals(ok.value(), testCase.expectedResult.value());
             }
         }
     }
@@ -129,8 +131,8 @@ class PeanoTest {
         // Forced to handle errors, without using exceptions in library code :)
 
         final Peano subbed = switch(subResult) {
-            case Result.Ok<Peano, PeanoError> ok -> ok.value();
-            case Result.Error<Peano, PeanoError> error -> fail("Unexpected error type: " + error.error());
+            case Ok<Peano, PeanoError> ok -> ok.value();
+            case Error<Peano, PeanoError> error -> fail("Unexpected error type: " + error.error());
         };
         assertEquals(1, PeanoImpl.toInt(subbed));
 
