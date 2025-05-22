@@ -4,7 +4,7 @@ import org.example.Peano.PeanoError;
 import org.example.Peano.PeanoImpl;
 import org.example.Result;
 import org.example.Result.Ok;
-import org.example.Result.Error;
+import org.example.Result.Err;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -110,8 +110,8 @@ class PeanoTest {
 
         final TestData[] testCases = {
             // division by 0
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Error<>(new PeanoError.DivisionByZero())),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Error<>(new PeanoError.DivisionByZero())),
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Err<>(new PeanoError.DivisionByZero())),
 
             // division by 1
             new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(0))),
@@ -163,7 +163,7 @@ class PeanoTest {
 
         final Peano subbed = switch(subResult) {
             case Ok<Peano, PeanoError> ok -> ok.value();
-            case Error<Peano, PeanoError> error -> fail("Unexpected error type: " + error.error());
+            case Result.Err<Peano, PeanoError> error -> fail("Unexpected error type: " + error.error());
         };
         assertEquals(4, PeanoImpl.toInt(subbed));
 

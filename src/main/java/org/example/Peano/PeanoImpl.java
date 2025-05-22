@@ -4,8 +4,8 @@ import org.example.Ordering;
 import org.example.Peano.Peano.Succ;
 import org.example.Peano.Peano.Zero;
 import org.example.Result;
+import org.example.Result.Err;
 import org.example.Result.Ok;
-import org.example.Result.Error;
 
 public class PeanoImpl {
     public static Peano fromInt(int n) {
@@ -57,7 +57,7 @@ public class PeanoImpl {
 
     public static Result<Peano, PeanoError> div(Peano dividend, Peano divisor) {
         if (divisor instanceof Zero) {
-            return new Error<>(new PeanoError.DivisionByZero());
+            return new Err<>(new PeanoError.DivisionByZero());
         }
 
         if (dividend instanceof Zero) {
