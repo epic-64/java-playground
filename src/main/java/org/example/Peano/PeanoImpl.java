@@ -50,7 +50,7 @@ public class PeanoImpl {
         return switch (p1) {
             case Zero() when p2 instanceof Zero -> new Ordering.Equal();
             case Zero() -> new Ordering.LessThan();
-            case Succ x when p2 instanceof Zero -> new Ordering.Greater();
+            case Succ ignored when p2 instanceof Zero -> new Ordering.Greater();
             case Succ x -> compare(x.previous(), ((Succ) p2).previous());
         };
     }
