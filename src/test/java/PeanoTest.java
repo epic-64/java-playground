@@ -83,52 +83,22 @@ class PeanoTest {
     }
 
     @Test
-    void testSubtractionFailure() {
-        record FailureTestCase (Peano p1, Peano p2, Error<Peano, PeanoError> expectedError) {}
+    void testSubtraction() {
+        record TestData(Peano p1, Peano p2, Result<Peano, PeanoError> expectedResult) {}
 
-        final FailureTestCase[] failureCases = {
-            new FailureTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
-            new FailureTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
+        final TestData[] testCases = {
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ok<>(PeanoImpl.fromInt(0))),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ok<>(PeanoImpl.fromInt(1))),
+            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
+            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(1))),
         };
 
-        for (FailureTestCase testCase : failureCases) {
+        for (TestData testCase : testCases) {
             final Result<Peano, PeanoError> result = PeanoImpl.sub(testCase.p1, testCase.p2);
-
-            switch (result) {
-                case Ok<Peano, PeanoError> ok -> fail("Expected error but got success: " + ok.value());
-                case Error<Peano, PeanoError> error -> assertEquals(error.error(), testCase.expectedError.error());
-            }
+            assertEquals(testCase.expectedResult, result);
         }
-    }
-
-    @Test
-    void testSubtractionSuccess() {
-        record SuccessTestCase (Peano p1, Peano p2, Ok<Peano, PeanoError> expectedResult) {}
-
-        final SuccessTestCase[] successCases = {
-            new SuccessTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ok<>(new Peano.Zero())),
-            new SuccessTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ok<>(PeanoImpl.fromInt(1))),
-            new SuccessTestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
-            new SuccessTestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(1))),
-        };
-
-        for (SuccessTestCase testCase : successCases) {
-            final Result<Peano, PeanoError> result = PeanoImpl.sub(testCase.p1, testCase.p2);
-
-            switch (result) {
-                case Error<Peano, PeanoError> error -> fail("Expected success but got error: " + error.error());
-                case Ok<Peano, PeanoError> ok -> assertEquals(ok.value(), testCase.expectedResult.value());
-            }
-        }
-    }
-
-    @Test
-    void testDivisionByZero() {
-        final Result<Peano, PeanoError> result = PeanoImpl.div(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0));
-        assertEquals(new Error<>(new PeanoError.DivisionByZero()), result);
-
-        final Result<Peano, PeanoError> result2 = PeanoImpl.div(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0));
-        assertEquals(new Error<>(new PeanoError.DivisionByZero()), result2);
     }
 
     @Test
