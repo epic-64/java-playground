@@ -76,9 +76,9 @@ public class PeanoImpl {
         Peano divisions = new Zero();
         Peano remainder = dividend;
 
-        while (!(compare(remainder, divisor) instanceof Ordering.LessThan)) {
-            remainder = sub(remainder, divisor);
-            divisions = add(divisions, PeanoImpl.fromInt(1));
+        while (!(remainder.compare(divisor) instanceof Ordering.LessThan)) {
+            remainder = remainder.sub(divisor);
+            divisions = divisions.add(Peano.one());
         }
 
         return new Ok<>(divisions);

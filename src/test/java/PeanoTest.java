@@ -171,7 +171,7 @@ class PeanoTest {
         };
 
         for (TestData testCase : testCases) {
-            final Ordering result = PeanoImpl.compare(testCase.p1, testCase.p2);
+            final Ordering result = testCase.p1.compare(testCase.p2);
             assertEquals(testCase.expectedResult, result, "Failed for %s <=> %s".formatted(testCase.p1, testCase.p2));
         }
     }

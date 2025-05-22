@@ -7,6 +7,10 @@ public sealed interface Peano {
     record Zero() implements Peano {}
     record Succ(Peano previous) implements Peano {}
 
+    static Peano one() {
+        return new Succ(new Zero());
+    }
+
     static Peano fromInt(int n) {
         return PeanoImpl.fromInt(n);
     }
