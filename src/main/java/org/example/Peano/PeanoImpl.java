@@ -23,11 +23,11 @@ public class PeanoImpl {
         };
     }
 
-    public static Result<Peano> sub(Peano p1, Peano p2) {
+    public static Result<Peano, PeanoError> sub(Peano p1, Peano p2) {
         return switch (p1) {
             case Peano.Zero ignored1 -> switch (p2) {
                 case Peano.Zero ignored -> new Result.Ok<>(new Peano.Zero());
-                case Peano.Succ ignored -> new Result.Error<>(new IllegalArgumentException("Cannot subtract a positive number from zero"));
+                case Peano.Succ ignored -> new Result.Error<>(new PeanoError.CannotSubtractPositiveFromZero());
             };
             case Peano.Succ s -> switch (p2) {
                 case Peano.Zero ignored -> new Result.Ok<>(p1);

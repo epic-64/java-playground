@@ -1,6 +1,6 @@
 package org.example;
 
-sealed public interface Result<T> {
-    record Ok<T>(T value) implements Result<T> {}
-    record Error<T>(Exception exception) implements Result<T> {}
+sealed public interface Result<T, E> {
+    record Ok<T, E>(T value) implements Result<T, E> {}
+    record Error<T, E>(E error) implements Result<T, E> {}
 }
