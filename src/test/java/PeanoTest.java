@@ -84,19 +84,19 @@ class PeanoTest {
 
     @Test
     void testSubtraction() {
-        record TestData(Peano p1, Peano p2, Result<Peano, PeanoError> expectedResult) {}
+        record TestData(Peano p1, Peano p2, Peano expectedResult) {}
 
         final TestData[] testCases = {
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Error<>(new PeanoError.CannotSubtractPositiveFromZero())),
-            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ok<>(PeanoImpl.fromInt(0))),
-            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ok<>(PeanoImpl.fromInt(1))),
-            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
-            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(1))),
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), PeanoImpl.fromInt(0)),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), PeanoImpl.fromInt(0)),
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), PeanoImpl.fromInt(0)),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), PeanoImpl.fromInt(1)),
+            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
+            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(1)),
         };
 
         for (TestData testCase : testCases) {
-            final Result<Peano, PeanoError> result = PeanoImpl.sub(testCase.p1, testCase.p2);
+            final Peano result = PeanoImpl.sub(testCase.p1, testCase.p2);
             assertEquals(testCase.expectedResult, result, "Failed for %s - %s".formatted(testCase.p1, testCase.p2));
         }
     }
@@ -132,8 +132,8 @@ class PeanoTest {
     }
 
     @Test
-    void testSubtractThenSum() {
-        Result<Peano, PeanoError> subResult = PeanoImpl.sub(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2));
+    void testDivideThenSum() {
+        Result<Peano, PeanoError> subResult = PeanoImpl.div(PeanoImpl.fromInt(9), PeanoImpl.fromInt(2));
 
         // Compile error: Cannot convert from Result<Peano> to Peano
         // PeanoImpl.add(subResult, PeanoImpl.fromInt(2));
@@ -143,9 +143,9 @@ class PeanoTest {
             case Ok<Peano, PeanoError> ok -> ok.value();
             case Error<Peano, PeanoError> error -> fail("Unexpected error type: " + error.error());
         };
-        assertEquals(1, PeanoImpl.toInt(subbed));
+        assertEquals(4, PeanoImpl.toInt(subbed));
 
         final Peano result = PeanoImpl.add(subbed, PeanoImpl.fromInt(2));
-        assertEquals(3, PeanoImpl.toInt(result));
+        assertEquals(6, PeanoImpl.toInt(result));
     }
 }

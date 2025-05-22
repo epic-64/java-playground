@@ -28,12 +28,12 @@ public class PeanoImpl {
         };
     }
 
-    public static Result<Peano, PeanoError> sub(Peano p1, Peano p2) {
+    public static Peano sub(Peano p1, Peano p2) {
         return switch (p1) {
-            case Zero z -> new Ok<>(new Zero());
-            case Succ s -> switch (p2) {
-                case Zero ignored -> new Ok<>(p1);
-                case Succ s2 -> sub(s.previous(), s2.previous()); // StackOverflow!
+            case Zero z -> z;
+            case Succ(Peano previous) -> switch (p2) {
+                case Zero ignored -> p1;
+                case Succ s2 -> sub(previous, s2.previous()); // StackOverflow!
             };
         };
     }
@@ -71,13 +71,7 @@ public class PeanoImpl {
 
         while (true) {
             // subtract p2 from our number and extract the value
-            remainder = switch (sub(remainder, divisor)) {
-                case Ok<Peano, PeanoError> ok -> ok.value();
-                case Error<Peano, PeanoError> error -> {
-                    // this will never happen, trust me
-                    throw new IllegalStateException("Unexpected error: " + error.error());
-                }
-            };
+            remainder = sub(remainder, divisor);
 
             // add 1 to our division counter every time we can subtract p2
             divisions = add(divisions, new Succ(new Zero()));
