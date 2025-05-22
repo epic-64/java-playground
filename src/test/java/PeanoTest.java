@@ -23,7 +23,7 @@ class PeanoTest {
 
         for (TestCase testCase : testCases) {
             Peano result = PeanoImpl.fromInt(testCase.input);
-            assertEquals(result, testCase.expected);
+            assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
         }
     }
 
@@ -40,7 +40,7 @@ class PeanoTest {
 
         for (TestCase testCase : testCases) {
             int result = PeanoImpl.toInt(testCase.input);
-            assertEquals(result, testCase.expected);
+            assertEquals(result, testCase.expected, "Failed for %s".formatted(testCase.input));
         }
     }
 
@@ -59,7 +59,7 @@ class PeanoTest {
 
         for (TestCase testCase : testCases) {
             final Peano result = PeanoImpl.add(testCase.p1, testCase.p2);
-            assertEquals(result, testCase.expectedResult);
+            assertEquals(result, testCase.expectedResult, "Failed for %s + %s".formatted(testCase.p1, testCase.p2));
         }
     }
 
@@ -78,7 +78,7 @@ class PeanoTest {
 
         for (TestCase testCase : testCases) {
             final Peano result = PeanoImpl.mul(testCase.p1, testCase.p2);
-            assertEquals(result, testCase.expectedResult);
+            assertEquals(result, testCase.expectedResult, "Failed for %s * %s".formatted(testCase.p1, testCase.p2));
         }
     }
 
@@ -97,7 +97,7 @@ class PeanoTest {
 
         for (TestData testCase : testCases) {
             final Result<Peano, PeanoError> result = PeanoImpl.sub(testCase.p1, testCase.p2);
-            assertEquals(testCase.expectedResult, result);
+            assertEquals(testCase.expectedResult, result, "Failed for %s - %s".formatted(testCase.p1, testCase.p2));
         }
     }
 
@@ -106,19 +106,28 @@ class PeanoTest {
         record TestData(Peano p1, Peano p2, Result<Peano, PeanoError> expectedResult) {}
 
         final TestData[] testCases = {
+            // division by 0
             new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Error<>(new PeanoError.DivisionByZero())),
             new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Error<>(new PeanoError.DivisionByZero())),
+
+            // division by 1
             new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(0))),
             new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
             new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(2))),
             new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(3))),
+
+            // division by 2
             new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(2))),
             new TestData(PeanoImpl.fromInt(9), PeanoImpl.fromInt(4), new Ok<>(PeanoImpl.fromInt(2))),
+
+            // todo: currently failing. fix it
+            // divisor larger than dividend
+            // new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(0))),
         };
 
         for (TestData testCase : testCases) {
             final Result<Peano, PeanoError> result = PeanoImpl.div(testCase.p1, testCase.p2);
-            assertEquals(testCase.expectedResult, result);
+            assertEquals(testCase.expectedResult, result, "Failed for %s / %s".formatted(testCase.p1, testCase.p2));
         }
     }
 

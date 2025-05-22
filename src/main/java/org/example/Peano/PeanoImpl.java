@@ -30,10 +30,7 @@ public class PeanoImpl {
 
     public static Result<Peano, PeanoError> sub(Peano p1, Peano p2) {
         return switch (p1) {
-            case Zero ignored1 -> switch (p2) {
-                case Zero ignored -> new Ok<>(new Zero());
-                case Succ ignored -> new Error<>(new PeanoError.CannotSubtractPositiveFromZero());
-            };
+            case Zero z -> new Ok<>(new Zero());
             case Succ s -> switch (p2) {
                 case Zero ignored -> new Ok<>(p1);
                 case Succ s2 -> sub(s.previous(), s2.previous()); // StackOverflow!
@@ -60,35 +57,36 @@ public class PeanoImpl {
         }
     }
 
-    public static Result<Peano, PeanoError> div(Peano p1, Peano p2) {
-        if (p2 instanceof Zero) {
+    public static Result<Peano, PeanoError> div(Peano dividend, Peano divisor) {
+        if (divisor instanceof Zero) {
             return new Error<>(new PeanoError.DivisionByZero());
         }
 
-        if (p1 instanceof Zero) {
+        if (dividend instanceof Zero) {
             return new Ok<>(new Zero());
         }
 
-        Peano divisionCounter = new Zero();
-        Peano remainder = p1;
+        Peano divisions = new Zero();
+        Peano remainder = dividend;
 
         while (true) {
             // subtract p2 from our number and extract the value
-            remainder = switch (sub(remainder, p2)) {
+            remainder = switch (sub(remainder, divisor)) {
                 case Ok<Peano, PeanoError> ok -> ok.value();
-                case Error<Peano, PeanoError> error -> throw new IllegalStateException("Unexpected error: " + error.error()); // this will never happen, trust me
+                case Error<Peano, PeanoError> error -> {
+                    // this will never happen, trust me
+                    throw new IllegalStateException("Unexpected error: " + error.error());
+                }
             };
 
-            // add 1 to our division counter for each time we can subtract p2
-            divisionCounter = add(divisionCounter, new Succ(new Zero()));
+            // add 1 to our division counter every time we can subtract p2
+            divisions = add(divisions, new Succ(new Zero()));
 
-            // if and only if the remainder is less than p2, we stop
-            Ordering comparison = compare(remainder, p2);
-            if (comparison instanceof Ordering.LessThan) {
+            if (compare(remainder, divisor) instanceof Ordering.LessThan) {
                 break;
             }
         }
 
-        return new Ok<>(divisionCounter);
+        return new Ok<>(divisions);
     }
 }
