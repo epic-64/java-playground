@@ -129,7 +129,7 @@ class PeanoTest {
         };
 
         for (TestData testCase : testCases) {
-            final Result<Peano, PeanoError> result = PeanoImpl.div(testCase.p1, testCase.p2);
+            final Result<Peano, PeanoError.DivisionByZero> result = PeanoImpl.div(testCase.p1, testCase.p2);
             assertEquals(testCase.expectedResult, result, "Failed for %s / %s".formatted(testCase.p1, testCase.p2));
         }
     }
@@ -155,7 +155,7 @@ class PeanoTest {
 
     @Test
     void testDivideThenSum() {
-        Result<Peano, PeanoError> subResult = PeanoImpl.div(PeanoImpl.fromInt(9), PeanoImpl.fromInt(2));
+        Result<Peano, PeanoError.DivisionByZero> subResult = PeanoImpl.div(PeanoImpl.fromInt(9), PeanoImpl.fromInt(2));
 
         // Compile error: Cannot convert from Result<Peano> to Peano
         // PeanoImpl.add(subResult, PeanoImpl.fromInt(2));

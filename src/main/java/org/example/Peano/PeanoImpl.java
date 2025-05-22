@@ -55,7 +55,7 @@ public class PeanoImpl {
         };
     }
 
-    public static Result<Peano, PeanoError> div(Peano dividend, Peano divisor) {
+    public static Result<Peano, PeanoError.DivisionByZero> div(Peano dividend, Peano divisor) {
         if (divisor instanceof Zero) {
             return new Err<>(new PeanoError.DivisionByZero());
         }

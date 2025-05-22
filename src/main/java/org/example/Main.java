@@ -19,7 +19,7 @@ public class Main {
         System.out.printf("Sum of %s and %s is: %s%n%n", toInt(num1), toInt(num2), toInt(sum));
 
         final Peano num3 = switch (PeanoImpl.div(num1, num2)) {
-            case Err(PeanoError err) -> throw new IllegalArgumentException(err.toString());
+            case Err(PeanoError.DivisionByZero err) -> throw new RuntimeException("Boo! Division by zero");
             case Ok(Peano value) -> value;
         };
 
