@@ -92,8 +92,8 @@ class PeanoTest {
             final Result<Peano> result = PeanoImpl.sub(testCase.p1, testCase.p2);
 
             switch (result) {
-                case Result.Ok<Peano> ok -> fail("Expected error but got success: " + ok.getValue());
-                case Result.Error<Peano> error -> assertEquals(error.getError().getMessage(), testCase.expectedError.getError().getMessage());
+                case Result.Ok<Peano> ok -> fail("Expected exception but got success: " + ok.value());
+                case Result.Error<Peano> error -> assertEquals(error.exception().getMessage(), testCase.expectedError.exception().getMessage());
             }
         }
     }
@@ -113,8 +113,8 @@ class PeanoTest {
             final Result<Peano> result = PeanoImpl.sub(testCase.p1, testCase.p2);
 
             switch (result) {
-                case Result.Error<Peano> error -> fail("Expected success but got error: " + error.getError().getMessage());
-                case Result.Ok<Peano> ok -> assertEquals(ok.getValue(), testCase.expectedResult.getValue());
+                case Result.Error<Peano> error -> fail("Expected success but got exception: " + error.exception().getMessage());
+                case Result.Ok<Peano> ok -> assertEquals(ok.value(), testCase.expectedResult.value());
             }
         }
     }
@@ -123,13 +123,13 @@ class PeanoTest {
     void testSubtractThenSum() {
         Result<Peano> subResult = PeanoImpl.sub(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2));
 
-        // Compile error: Cannot convert from Result<Peano> to Peano
+        // Compile exception: Cannot convert from Result<Peano> to Peano
         // PeanoImpl.add(subResult, PeanoImpl.fromInt(2));
         // Forced to handle errors, without using exceptions in library code :)
 
         final Peano subbed = switch(subResult) {
-            case Result.Ok<Peano> ok -> ok.getValue();
-            case Result.Error<Peano> error -> fail("Expected success but got error: " + error.getError().getMessage());
+            case Result.Ok<Peano> ok -> ok.value();
+            case Result.Error<Peano> error -> fail("Unexpected exception type: " + error.exception().getMessage());
         };
         assertEquals(1, PeanoImpl.toInt(subbed));
 
