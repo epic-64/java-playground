@@ -17,7 +17,7 @@ public class Main {
         final Peano sum = add(num1, num2);
         System.out.printf("Sum of %s and %s is: %s%n%n", toInt(num1), toInt(num2), toInt(sum));
 
-        final Peano num0 = fromIntSafe(101).getOrThrow("I don't care!!!");
+        final Peano num0 = fromIntSafe(101).getOrThrow("It's the user's fault, I don't care!!!");
 
         // Explicit error handling. Compiler forces you to handle all possible cases.
         final Peano num7 = switch(fromIntSafe(7)) {
