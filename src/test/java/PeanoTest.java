@@ -3,28 +3,11 @@ import org.example.Peano.PeanoImpl;
 import org.example.Result;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class PeanoTest {
-    void assertSameResult(Result<Peano> result1, Result<Peano> result2) {
-        switch (result1) {
-            case Result.Ok<Peano> ok1 -> {
-                if (result2 instanceof Result.Ok<Peano> ok2) {
-                    assertEquals(ok1.getValue(), ok2.getValue());
-                } else {
-                    throw new AssertionError("Results are not equal");
-                }
-            }
-            case Result.Error<Peano> error1 -> {
-                if (result2 instanceof Result.Error<Peano> error2) {
-                    assertEquals(error1.getError(), error2.getError());
-                } else {
-                    throw new AssertionError("Results are not equal");
-                }
-            }
-        }
-    }
-
     @Test
     void testFromInt() {
         record TestCase(int input, Peano expected) {}
@@ -89,7 +72,6 @@ class PeanoTest {
                 new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), PeanoImpl.fromInt(1)),
                 new TestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), PeanoImpl.fromInt(6)),
                 new TestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), PeanoImpl.fromInt(6)),
-                // new TestCase(PeanoImpl.fromInt(100), PeanoImpl.fromInt(100), PeanoImpl.fromInt(10_000)),
         };
 
         for (TestCase testCase : testCases) {
@@ -99,21 +81,42 @@ class PeanoTest {
     }
 
     @Test
-    void testSubtraction() {
-        record TestCase(Peano p1, Peano p2, Result<Peano> expectedResult) {}
+    void testSubtractionFailure() {
+        record FailureTestCase (Peano p1, Peano p2, Result.Error<IllegalArgumentException> expectedError) {}
 
-        final TestCase[] testCases = {
-                new TestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Result.Ok<>(PeanoImpl.fromInt(0))),
-                new TestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Result.Error<>(new IllegalArgumentException("Cannot subtract a positive number from zero"))),
-                new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Result.Ok<>(PeanoImpl.fromInt(1))),
-                new TestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Result.Ok<>(PeanoImpl.fromInt(0))),
-                new TestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Result.Ok<>(PeanoImpl.fromInt(1))),
-                new TestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(2), new Result.Ok<>(PeanoImpl.fromInt(0))),
+        final FailureTestCase[] failureCases = {
+            new FailureTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Result.Error<>(new IllegalArgumentException("Cannot subtract a positive number from zero"))),
+            new FailureTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(2), new Result.Error<>(new IllegalArgumentException("Cannot subtract a positive number from zero"))),
         };
 
-        for (TestCase testCase : testCases) {
+        for (FailureTestCase testCase : failureCases) {
             final Result<Peano> result = PeanoImpl.sub(testCase.p1, testCase.p2);
-            assertSameResult(result, testCase.expectedResult);
+
+            switch (result) {
+                case Result.Ok<Peano> ok -> fail("Expected error but got success: " + ok.getValue());
+                case Result.Error<Peano> error -> assertEquals(error.getError().getMessage(), testCase.expectedError.getError().getMessage());
+            }
+        }
+    }
+
+    @Test
+    void testSubtractionSuccess() {
+        record SuccessTestCase (Peano p1, Peano p2, Result.Ok<Peano> expectedResult) {}
+
+        final SuccessTestCase[] successCases = {
+            new SuccessTestCase(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Result.Ok<>(new Peano.Zero())),
+            new SuccessTestCase(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Result.Ok<>(PeanoImpl.fromInt(1))),
+            new SuccessTestCase(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Result.Ok<>(PeanoImpl.fromInt(1))),
+            new SuccessTestCase(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Result.Ok<>(PeanoImpl.fromInt(1))),
+        };
+
+        for (SuccessTestCase testCase : successCases) {
+            final Result<Peano> result = PeanoImpl.sub(testCase.p1, testCase.p2);
+
+            switch (result) {
+                case Result.Error<Peano> error -> fail("Expected success but got error: " + error.getError().getMessage());
+                case Result.Ok<Peano> ok -> assertEquals(ok.getValue(), testCase.expectedResult.getValue());
+            }
         }
     }
 }

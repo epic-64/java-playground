@@ -3,11 +3,10 @@ package org.example;
 sealed public interface Result<T> {
     boolean isError();
     boolean isOk();
-
     Exception getError();
     T getValue() throws Exception;
 
-    record Ok<T>(T t) implements Result<T> {
+    record Ok<T>(T value) implements Result<T> {
         @Override
         public boolean isError() {
             return false;
@@ -15,7 +14,7 @@ sealed public interface Result<T> {
 
         @Override
         public boolean isOk() {
-            return false;
+            return true;
         }
 
         @Override
@@ -25,13 +24,14 @@ sealed public interface Result<T> {
 
         @Override
         public T getValue() {
-            return null;
+            return value;
         }
     }
+
     record Error<T>(Exception e) implements Result<T> {
         @Override
         public boolean isError() {
-            return false;
+            return true;
         }
 
         @Override
