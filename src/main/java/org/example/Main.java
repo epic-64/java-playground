@@ -18,7 +18,11 @@ public class Main {
         final Peano sum = add(num1, num2);
         System.out.printf("Sum of %s and %s is: %s%n%n", toInt(num1), toInt(num2), toInt(sum));
 
-        // final var num3 = PeanoImpl.div(num1, num2);
+        final Peano num3 = switch (PeanoImpl.div(num1, num2)) {
+            case Err(PeanoError err) -> throw new IllegalArgumentException(err.toString());
+            case Ok(Peano value) -> value;
+        };
+
         // final var num4 = PeanoImpl.add(num3, num2);
     }
 }

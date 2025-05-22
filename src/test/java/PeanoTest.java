@@ -162,8 +162,8 @@ class PeanoTest {
         // Forced to handle errors, without using exceptions in library code :)
 
         final Peano subbed = switch(subResult) {
-            case Ok<Peano, PeanoError> ok -> ok.value();
-            case Result.Err<Peano, PeanoError> error -> fail("Unexpected error type: " + error.error());
+            case Err(PeanoError error) -> fail("Unexpected error type: " + error);
+            case Ok(Peano peano) -> peano;
         };
         assertEquals(4, PeanoImpl.toInt(subbed));
 
