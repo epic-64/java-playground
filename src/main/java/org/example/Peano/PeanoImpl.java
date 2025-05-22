@@ -28,6 +28,9 @@ public class PeanoImpl {
         };
     }
 
+    /**
+     * Note: I allow subtracting a larger number from a smaller one, the result will be Zero.
+     */
     public static Peano sub(Peano p1, Peano p2) {
         return switch (p1) {
             case Zero z -> z;

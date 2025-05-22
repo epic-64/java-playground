@@ -1,3 +1,4 @@
+import org.example.Ordering;
 import org.example.Peano.Peano;
 import org.example.Peano.PeanoError;
 import org.example.Peano.PeanoImpl;
@@ -128,6 +129,25 @@ class PeanoTest {
         for (TestData testCase : testCases) {
             final Result<Peano, PeanoError> result = PeanoImpl.div(testCase.p1, testCase.p2);
             assertEquals(testCase.expectedResult, result, "Failed for %s / %s".formatted(testCase.p1, testCase.p2));
+        }
+    }
+
+    @Test
+    void testComparison() {
+        record TestData(Peano p1, Peano p2, Ordering expectedResult) {}
+
+        final TestData[] testCases = {
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Ordering.Equal()),
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ordering.LessThan()),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Ordering.Greater()),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ordering.Equal()),
+            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(3), new Ordering.LessThan()),
+            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(2), new Ordering.Greater()),
+        };
+
+        for (TestData testCase : testCases) {
+            final Ordering result = PeanoImpl.compare(testCase.p1, testCase.p2);
+            assertEquals(testCase.expectedResult, result, "Failed for %s <=> %s".formatted(testCase.p1, testCase.p2));
         }
     }
 
