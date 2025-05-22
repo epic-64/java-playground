@@ -133,8 +133,23 @@ class PeanoTest {
 
     @Test
     void testDivision() {
-        final Result<Peano, PeanoError> result = PeanoImpl.div(PeanoImpl.fromInt(6), PeanoImpl.fromInt(2));
-        assertEquals(new Ok<>(PeanoImpl.fromInt(3)), result);
+        record TestData(Peano p1, Peano p2, Result<Peano, PeanoError> expectedResult) {}
+
+        final TestData[] testCases = {
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(0), new Error<>(new PeanoError.DivisionByZero())),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(0), new Error<>(new PeanoError.DivisionByZero())),
+            new TestData(PeanoImpl.fromInt(0), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(0))),
+            new TestData(PeanoImpl.fromInt(1), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(1))),
+            new TestData(PeanoImpl.fromInt(2), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(2))),
+            new TestData(PeanoImpl.fromInt(3), PeanoImpl.fromInt(1), new Ok<>(PeanoImpl.fromInt(3))),
+            new TestData(PeanoImpl.fromInt(4), PeanoImpl.fromInt(2), new Ok<>(PeanoImpl.fromInt(2))),
+            new TestData(PeanoImpl.fromInt(9), PeanoImpl.fromInt(4), new Ok<>(PeanoImpl.fromInt(2))),
+        };
+
+        for (TestData testCase : testCases) {
+            final Result<Peano, PeanoError> result = PeanoImpl.div(testCase.p1, testCase.p2);
+            assertEquals(testCase.expectedResult, result);
+        }
     }
 
     @Test
