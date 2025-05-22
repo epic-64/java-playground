@@ -33,7 +33,7 @@ public class PeanoImpl {
     public static Peano add(Peano p1, Peano p2) {
         return switch (p1) {
             case Zero() -> p2;
-            case Succ s -> new Succ(add(s.previous(), p2));
+            case Succ(Peano previous) -> new Succ(add(previous, p2));
         };
     }
 
@@ -64,7 +64,7 @@ public class PeanoImpl {
         };
     }
 
-    public static Result<Peano, PeanoDivisionError.DivisionByZero> div(Peano dividend, Peano divisor) {
+    public static Result<Peano, PeanoDivisionError> div(Peano dividend, Peano divisor) {
         if (divisor instanceof Zero) {
             return new Err<>(new PeanoDivisionError.DivisionByZero());
         }
