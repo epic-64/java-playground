@@ -131,7 +131,6 @@ class PeanoTest {
             case Result.Ok<Peano> ok -> ok.getValue();
             case Result.Error<Peano> error -> fail("Expected success but got error: " + error.getError().getMessage());
         };
-
         assertEquals(1, PeanoImpl.toInt(subbed));
 
         final Peano result = PeanoImpl.add(subbed, PeanoImpl.fromInt(2));
