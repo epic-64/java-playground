@@ -60,7 +60,7 @@ public class PeanoImpl {
             case Zero() when p2 instanceof Zero -> new Ordering.Equal();
             case Zero() -> new Ordering.LessThan();
             case Succ ignored when p2 instanceof Zero -> new Ordering.Greater();
-            case Succ x -> compare(x.previous(), ((Succ) p2).previous());
+            case Succ(Peano previous) -> compare(previous, ((Succ) p2).previous());
         };
     }
 

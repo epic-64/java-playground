@@ -26,9 +26,9 @@ class PeanoTest {
                 new TestData(100, new Succ(Peano.fromInt(99))),
         };
 
-        for (TestData testCase : testCases) {
-            Peano result = Peano.fromInt(testCase.input);
-            assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
+        for (TestData t : testCases) {
+            Peano result = Peano.fromInt(t.input);
+            assertEquals(result, t.expected, "Failed for %d".formatted(t.input));
         }
     }
 
@@ -46,9 +46,9 @@ class PeanoTest {
                 new TestData(101, new Err<>(new PeanoConstructionError.TooLarge(101))),
         };
 
-        for (TestData testCase : testCases) {
-            Result<Peano, PeanoConstructionError> result = Peano.fromIntSafe(testCase.input);
-            assertEquals(result, testCase.expected, "Failed for %d".formatted(testCase.input));
+        for (TestData t : testCases) {
+            Result<Peano, PeanoConstructionError> result = Peano.fromIntSafe(t.input);
+            assertEquals(result, t.expected, "Failed for %d".formatted(t.input));
         }
     }
 
@@ -64,9 +64,9 @@ class PeanoTest {
                 new TestData(new Succ(Peano.fromInt(99)), 100),
         };
 
-        for (TestData testCase : testCases) {
-            int result = testCase.input.toInt();
-            assertEquals(result, testCase.expected, "Failed for %s".formatted(testCase.input));
+        for (TestData t : testCases) {
+            int result = t.input.toInt();
+            assertEquals(result, t.expected, "Failed for %s".formatted(t.input));
         }
     }
 
@@ -83,9 +83,9 @@ class PeanoTest {
                 new TestData(Peano.fromInt(3), Peano.fromInt(2), Peano.fromInt(5)),
         };
 
-        for (TestData testCase : testCases) {
-            final Peano result = PeanoImpl.add(testCase.p1, testCase.p2);
-            assertEquals(result, testCase.expectedResult, "Failed for %s + %s".formatted(testCase.p1, testCase.p2));
+        for (TestData t : testCases) {
+            final Peano result = PeanoImpl.add(t.p1, t.p2);
+            assertEquals(result, t.expectedResult, "Failed for %s + %s".formatted(t.p1, t.p2));
         }
     }
 
@@ -102,9 +102,9 @@ class PeanoTest {
                 new TestData(Peano.fromInt(3), Peano.fromInt(2), Peano.fromInt(6)),
         };
 
-        for (TestData testCase : testCases) {
-            final Peano result = PeanoImpl.mul(testCase.p1, testCase.p2);
-            assertEquals(result, testCase.expectedResult, "Failed for %s * %s".formatted(testCase.p1, testCase.p2));
+        for (TestData t : testCases) {
+            final Peano result = PeanoImpl.mul(t.p1, t.p2);
+            assertEquals(result, t.expectedResult, "Failed for %s * %s".formatted(t.p1, t.p2));
         }
     }
 
@@ -121,9 +121,9 @@ class PeanoTest {
                 new TestData(Peano.fromInt(3), Peano.fromInt(2), Peano.fromInt(1)),
         };
 
-        for (TestData testCase : testCases) {
-            final Peano result = PeanoImpl.sub(testCase.p1, testCase.p2);
-            assertEquals(testCase.expectedResult, result, "Failed for %s - %s".formatted(testCase.p1, testCase.p2));
+        for (TestData t : testCases) {
+            final Peano result = PeanoImpl.sub(t.p1, t.p2);
+            assertEquals(t.expectedResult, result, "Failed for %s - %s".formatted(t.p1, t.p2));
         }
     }
 
@@ -151,9 +151,9 @@ class PeanoTest {
                 new TestData(Peano.fromInt(4), Peano.fromInt(5), new Ok<>(Peano.fromInt(0))),
         };
 
-        for (TestData testCase : testCases) {
-            final Result<Peano, PeanoDivisionError> result = PeanoImpl.div(testCase.p1, testCase.p2);
-            assertEquals(testCase.expectedResult, result, "Failed for %s / %s".formatted(testCase.p1, testCase.p2));
+        for (TestData t : testCases) {
+            final Result<Peano, PeanoDivisionError> result = PeanoImpl.div(t.p1, t.p2);
+            assertEquals(t.expectedResult, result, "Failed for %s / %s".formatted(t.p1, t.p2));
         }
     }
 
@@ -170,9 +170,9 @@ class PeanoTest {
                 new TestData(Peano.fromInt(3), Peano.fromInt(2), new Ordering.Greater()),
         };
 
-        for (TestData testCase : testCases) {
-            final Ordering result = testCase.p1.compare(testCase.p2);
-            assertEquals(testCase.expectedResult, result, "Failed for %s <=> %s".formatted(testCase.p1, testCase.p2));
+        for (TestData t : testCases) {
+            final Ordering result = t.p1.compare(t.p2);
+            assertEquals(t.expectedResult, result, "Failed for %s <=> %s".formatted(t.p1, t.p2));
         }
     }
 
@@ -197,19 +197,15 @@ class PeanoTest {
 
     @Test
     void testDivideThenSum() {
-        Result<Peano, PeanoDivisionError> subResult = PeanoImpl.div(Peano.fromInt(9), Peano.fromInt(2));
+        Result<Peano, PeanoDivisionError> divResult = PeanoImpl.div(Peano.fromInt(9), Peano.fromInt(2));
 
-        // Compile error: Cannot convert from Result<Peano> to Peano
-        // PeanoImpl.add(subResult, Peano.fromInt(2));
-        // Forced to handle errors, without using exceptions in library code :)
-
-        final Peano subbed = switch (subResult) {
-            case Err(PeanoDivisionError error) -> fail("Unexpected error type: " + error);
+        final Peano divided = switch (divResult) {
+            case Err(PeanoDivisionError.DivisionByZero error) -> fail("Unexpected error type: " + error);
             case Ok(Peano peano) -> peano;
         };
-        assertEquals(4, PeanoImpl.toInt(subbed));
+        assertEquals(4, divided.toInt());
 
-        final Peano result = PeanoImpl.add(subbed, Peano.fromInt(2));
-        assertEquals(6, PeanoImpl.toInt(result));
+        final Peano result = PeanoImpl.add(divided, Peano.fromInt(2));
+        assertEquals(6, result.toInt());
     }
 }
