@@ -8,17 +8,17 @@ public sealed interface Peano {
     record Succ(Peano previous) implements Peano {}
 
     default Succ asSucc() throws IllegalArgumentException {
-        if (this instanceof Succ s) {
-            return s;
-        }
-        throw new IllegalArgumentException("Expected Peano.Succ, but got: " + this);
+        return switch (this) {
+            case Zero z -> throw new IllegalArgumentException("Expected Peano.Succ, but got Peano.Zero: " + z);
+            case Succ s -> s;
+        };
     }
 
     default Zero asZero() throws IllegalArgumentException {
-        if (this instanceof Zero z) {
-            return z;
-        }
-        throw new IllegalArgumentException("Expected Peano.Zero, but got: " + this);
+        return switch (this) {
+            case Zero z -> z;
+            case Succ s -> throw new IllegalArgumentException("Expected Peano.Zero, but got Peano.Succ: " + s);
+        };
     }
 
     static Peano one() {
