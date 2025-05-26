@@ -7,6 +7,20 @@ public sealed interface Peano {
     record Zero() implements Peano {}
     record Succ(Peano previous) implements Peano {}
 
+    default Succ asSucc() throws IllegalArgumentException {
+        if (this instanceof Succ s) {
+            return s;
+        }
+        throw new IllegalArgumentException("Expected Peano.Succ, but got: " + this);
+    }
+
+    default Zero asZero() throws IllegalArgumentException {
+        if (this instanceof Zero z) {
+            return z;
+        }
+        throw new IllegalArgumentException("Expected Peano.Zero, but got: " + this);
+    }
+
     static Peano one() {
         return new Succ(new Zero());
     }
