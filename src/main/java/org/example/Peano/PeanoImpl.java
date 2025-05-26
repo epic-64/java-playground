@@ -41,9 +41,9 @@ public class PeanoImpl {
     public static Peano sub(Peano minuend, Peano subtrahend) {
         return switch (minuend) {
             case Zero z -> z;
-            case Succ(Peano minuend_ante) -> switch (subtrahend) {
+            case Succ(Peano minuend_previous) -> switch (subtrahend) {
                 case Zero() -> minuend;
-                case Succ(Peano subtrahend_ante) -> sub(minuend_ante, subtrahend_ante);
+                case Succ(Peano subtrahend_previous) -> sub(minuend_previous, subtrahend_previous);
             };
         };
     }
