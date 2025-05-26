@@ -7,20 +7,6 @@ public sealed interface Peano {
     record Zero() implements Peano {}
     record Succ(Peano previous) implements Peano {}
 
-    default Succ asSucc() throws IllegalArgumentException {
-        return switch (this) {
-            case Zero z -> throw new IllegalArgumentException("Expected Peano.Succ, but got Peano.Zero: " + z);
-            case Succ s -> s;
-        };
-    }
-
-    default Zero asZero() throws IllegalArgumentException {
-        return switch (this) {
-            case Zero z -> z;
-            case Succ s -> throw new IllegalArgumentException("Expected Peano.Zero, but got Peano.Succ: " + s);
-        };
-    }
-
     static Peano one() {
         return new Succ(new Zero());
     }
@@ -55,5 +41,19 @@ public sealed interface Peano {
 
     default Ordering compare(Peano other) {
         return PeanoImpl.compare(this, other);
+    }
+
+    default Succ asSucc() throws IllegalArgumentException {
+        return switch (this) {
+            case Zero z -> throw new IllegalArgumentException("Expected Peano.Succ, but got Peano.Zero: " + z);
+            case Succ s -> s;
+        };
+    }
+
+    default Zero asZero() throws IllegalArgumentException {
+        return switch (this) {
+            case Zero z -> z;
+            case Succ s -> throw new IllegalArgumentException("Expected Peano.Zero, but got Peano.Succ: " + s);
+        };
     }
 }
