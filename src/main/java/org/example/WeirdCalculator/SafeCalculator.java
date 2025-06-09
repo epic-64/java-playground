@@ -4,8 +4,6 @@ import org.example.Result;
 import org.example.Result.Err;
 import org.example.Result.Ok;
 
-import java.util.Scanner;
-
 public class SafeCalculator {
     public Result<Integer, ParseIntError> parseInt(String input) {
         try {

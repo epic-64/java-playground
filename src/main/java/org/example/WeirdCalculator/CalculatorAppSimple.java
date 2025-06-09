@@ -9,7 +9,6 @@ import java.util.Scanner;
 import static java.lang.System.in;
 import static java.lang.System.out;
 
-
 public class CalculatorAppSimple {
     public static void main(String[] args) {
         final Scanner scanner = new Scanner(in);
