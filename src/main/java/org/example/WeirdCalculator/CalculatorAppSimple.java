@@ -6,12 +6,13 @@ import org.example.Result.Ok;
 
 import java.util.Scanner;
 
+import static java.lang.System.in;
 import static java.lang.System.out;
 
 
 public class CalculatorAppSimple {
     public static void main(String[] args) {
-        final Scanner scanner = new Scanner(System.in);
+        final Scanner scanner = new Scanner(in);
         final Demo demo = new Demo(new SafeCalculator(), scanner);
 
         do {
@@ -46,15 +47,15 @@ class Demo {
         final Integer b;
         final Integer c;
 
-        System.out.println("Let's divide two numbers!");
+        out.println("Let's divide two numbers!");
 
-        System.out.println("Enter first number:");
+        out.println("Enter first number:");
         switch (calc.parseInt(scanner.nextLine())) {
             case Ok(Integer value) -> a = value;
             case Err(ParseIntError e) -> { return new Err<>(CalculatorError.from(e)); }
         }
 
-        System.out.println("Enter second number:");
+        out.println("Enter second number:");
         switch (calc.parseInt(scanner.nextLine())) {
             case Ok(Integer value) -> b = value;
             case Err(ParseIntError e) -> { return new Err<>(CalculatorError.from(e)); }
