@@ -11,12 +11,19 @@ import static java.lang.System.out;
 
 public class CalculatorAppSimple {
     public static void main(String[] args) {
-        final Demo demo = new Demo(new SafeCalculator(), new Scanner(System.in));
+        final Scanner scanner = new Scanner(System.in);
+        final Demo demo = new Demo(new SafeCalculator(), scanner);
 
         do {
-            demo.demo();
+            final Result<Integer, CalculatorError> result1 = demo.performDivision();
 
-            if (!demo.tryAgain()) {
+            out.println(switch (result1) {
+                case Ok(Integer value) -> "Result: " + value;
+                case Err(CalculatorError e) -> "Error: " + e.toMessage();
+            });
+
+            out.println("Would you like to try again? (y/n)");
+            if (!scanner.nextLine().trim().equalsIgnoreCase("y")) {
                 out.println("Goodbye!");
                 break;
             }
@@ -31,24 +38,6 @@ class Demo {
     public Demo (SafeCalculator calc, Scanner scanner) {
         this.calc = calc;
         this.scanner = scanner;
-    }
-
-    public void demo() {
-        final Result<Integer, CalculatorError> result1 = performDivision();
-
-        final String output = switch (result1) {
-            case Ok(Integer value) -> "Result: " + value;
-            case Err(CalculatorError e) -> "Calculator error: " + e.toMessage();
-        };
-
-        out.println(output);
-    }
-
-    public boolean tryAgain() {
-        out.println("Would you like to try again? (y/n)");
-        final String choice = new java.util.Scanner(System.in).nextLine().trim().toLowerCase();
-
-        return choice.equals("y");
     }
 
     public Result<Integer, CalculatorError> performDivision()
