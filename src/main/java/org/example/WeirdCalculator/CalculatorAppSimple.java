@@ -21,8 +21,9 @@ public class CalculatorAppSimple {
 
             out.println(output);
 
-            out.println("Wanna try again? (y/n)");
+            out.println("Would you like to try again? (y/n)");
             final String choice = new java.util.Scanner(System.in).nextLine().trim().toLowerCase();
+
             if (!choice.equals("y")) {
                 out.println("Goodbye!");
                 break;
