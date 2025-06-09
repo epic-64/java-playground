@@ -4,6 +4,8 @@ import org.example.Result;
 import org.example.Result.Err;
 import org.example.Result.Ok;
 
+import java.util.Scanner;
+
 public class SafeCalculator {
     public Result<Integer, ParseIntError> parseInt(String input) {
         try {
@@ -32,15 +34,32 @@ public class SafeCalculator {
         return a + b;
     }
 
-    public Result<Integer, DivisionError> someFunction() {
-        final Result<Integer, DivisionError> a = div(10, 0);
+    public Result<Integer, CalculatorError> divDemo()
+    {
+        final Scanner scanner = new Scanner(System.in);
+        final Integer a;
+        final Integer b;
+        final Integer c;
 
-        if (a.isErr()) {
-            return a;
+        System.out.println("Let's divide two numbers!");
+
+        System.out.println("Enter first number:");
+        switch (parseInt(scanner.nextLine())) {
+            case Ok(Integer value) -> a = value;
+            case Err(ParseIntError e) -> { return new Err<>(CalculatorError.from(e)); }
         }
 
-        final Integer b = a.ok();
+        System.out.println("Enter second number:");
+        switch (parseInt(scanner.nextLine())) {
+            case Ok(Integer value) -> b = value;
+            case Err(ParseIntError e) -> { return new Err<>(CalculatorError.from(e)); }
+        }
 
-        return new Ok<>(add(b, 5));
+        switch (div(a, b)) {
+            case Ok(Integer value) -> c = value;
+            case Err(DivisionError e) -> { return new Err<>(CalculatorError.from(e)); }
+        }
+
+        return new Ok<>(c);
     }
 }

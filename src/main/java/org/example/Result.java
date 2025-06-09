@@ -13,10 +13,12 @@ sealed public interface Result<T, E> {
         return this instanceof Err<T, E>;
     }
 
-    default T ok() throws RuntimeException {
+    default T expect(String assumption) throws RuntimeException {
         return switch (this) {
             case Ok(T value) -> value;
-            case Err(E err) -> throw new RuntimeException("Expected Ok, but got Err: " + err.toString());
+            case Err(E err) -> throw new RuntimeException(
+                "\n" + assumption + " -> Expected Ok, but got Err: " + err.toString()
+            );
         };
     }
 

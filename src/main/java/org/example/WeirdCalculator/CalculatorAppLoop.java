@@ -32,7 +32,7 @@ public class CalculatorAppLoop {
                     continue;
                 }
 
-                Integer dividend = parsedDividend.ok();
+                Integer dividend = parsedDividend.expect("Failed to parse dividend");
 
                 System.out.print("Enter the second number (divisor): ");
                 String inputDivisor = scanner.nextLine();
@@ -48,7 +48,7 @@ public class CalculatorAppLoop {
                     continue;
                 }
 
-                Integer divisor = parsedDivisor.ok();
+                Integer divisor = parsedDivisor.expect("Failed to parse divisor");
 
                 Result<Integer, DivisionError> divisionResult = calc.div(dividend, divisor);
                 if (divisionResult.isErr()) {
@@ -56,7 +56,7 @@ public class CalculatorAppLoop {
                     continue;
                 }
 
-                Integer result = divisionResult.ok();
+                Integer result = divisionResult.expect("Failed to perform division");
                 System.out.println("Result: " + result);
             }
 
@@ -74,7 +74,7 @@ public class CalculatorAppLoop {
                 continue;
             }
 
-            Integer number1 = parsed1.ok();
+            Integer number1 = parsed1.expect("Failed to parse first number");
         }
     }
 }
