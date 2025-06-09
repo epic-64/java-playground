@@ -27,4 +27,20 @@ public class SafeCalculator {
 
         return new Ok<>(dividend / divisor);
     }
+
+    public Integer add(Integer a, Integer b) {
+        return a + b;
+    }
+
+    public Result<Integer, DivisionError> someFunction() {
+        final Result<Integer, DivisionError> a = div(10, 0);
+
+        if (a.isErr()) {
+            return a;
+        }
+
+        final Integer b = a.ok();
+
+        return new Ok<>(add(b, 5));
+    }
 }
